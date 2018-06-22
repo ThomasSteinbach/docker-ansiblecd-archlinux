@@ -13,6 +13,7 @@ RUN pacman -Syu --noconfirm \
          syslog-ng \
          systemd \
          sudo \
+         openssh \
     && rm -Rf /usr/share/doc && rm -Rf /usr/share/man
 
 RUN \
