@@ -13,7 +13,6 @@ RUN pacman -Syu --noconfirm \
          syslog-ng \
          systemd \
          sudo \
-         openssh \
          docker \
     && rm -Rf /usr/share/doc && rm -Rf /usr/share/man
 
