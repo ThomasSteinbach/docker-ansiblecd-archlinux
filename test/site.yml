@@ -3,7 +3,7 @@
   tasks:
 
     - name: install sshd
-      apt:
+      pacman:
         name: openssh-server
         state: present
         update_cache: yes
