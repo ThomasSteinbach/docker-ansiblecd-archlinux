@@ -1,4 +1,4 @@
-FROM thomass/ansibleci-base as ansibleci-base
+FROM thomass/ansibleci-base:latest as ansibleci-base
 
 FROM base/archlinux:latest
 LABEL maintainer="Thomas Steinbach"
