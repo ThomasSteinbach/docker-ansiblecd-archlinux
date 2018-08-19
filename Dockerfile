@@ -14,6 +14,8 @@ RUN pacman -Syu --noconfirm \
          python \
          python-pip \
          rubygems \
+         ruby-rdoc \
+         base-devel \
          dbus \
          syslog-ng \
          systemd \
