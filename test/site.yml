@@ -1,0 +1,14 @@
+- name: simple test playbook
+  hosts: localhost
+  tasks:
+
+    - name: install sshd
+      apt:
+        name: openssh-server
+        state: present
+        update_cache: yes
+
+    - name: start sshd
+      service:
+        name: ssh
+        state: started
