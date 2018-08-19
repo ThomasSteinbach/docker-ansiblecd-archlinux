@@ -4,7 +4,7 @@
 
     - name: install sshd
       pacman:
-        name: openssh-server
+        name: openssh
         state: present
         update_cache: yes
 
