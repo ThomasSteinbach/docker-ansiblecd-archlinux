@@ -57,6 +57,6 @@ VOLUME ["/sys/fs/cgroup"]
 
 COPY --from=ansibleci-base /ansibleci-base /ansibleci-base
 RUN ln -s /ansibleci-base/scripts/run-tests.sh /usr/local/bin/run-tests && \
-    ln -s /ansibleci-base/ansible-plugins/human_log.py /usr/local/lib/python3.6/dist-packages/ansible/plugins/callback/human_log.py
+    ln -s /ansibleci-base/ansible-plugins/human_log.py /usr/lib/python3.7/site-packages/ansible/plugins/callback/human_log.py
 
 CMD ["/ansibleci-base/scripts/start-docker.sh"]
