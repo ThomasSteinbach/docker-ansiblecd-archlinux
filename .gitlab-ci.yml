@@ -1,3 +1,5 @@
+.gitlab-registry-login: &local-registry-login
+  docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 image: docker:latest
 
 stages:
@@ -17,7 +19,7 @@ hadolint:
 build:
   stage: build
   script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - *local-registry-login
     - docker build --pull -t "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}" . | tee docker-build-debug.out
     - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
   artifacts:
@@ -29,6 +31,7 @@ build:
 debug-failed-build:
   stage: debug
   script:
+    - *local-registry-login
     - DEBUG_LAYER=$(grep '\-\-\-> [0-9a-z]' docker-build-debug.out |tail -1| cut -b 7-)
     - docker tag "$DEBUG_LAYER" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-failed"
     - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-failed"
