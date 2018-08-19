@@ -12,12 +12,23 @@ ENV container=docker
 RUN pacman -Syu --noconfirm \
     && pacman -S --noconfirm \
          python \
+         python-pip \
+         rubygems \
          dbus \
          syslog-ng \
          systemd \
          sudo \
          docker \
     && rm -Rf /usr/share/doc && rm -Rf /usr/share/man
+
+# Ansible
+RUN pip3 install ansible==2.6.2
+RUN mkdir -p /etc/ansible
+RUN printf '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts
+
+# Inspec
+RUN gem install docker-api -v  1.34.2
+RUN gem install inspec -v  2.2.61
 
 RUN \
     rm -f /usr/lib/systemd/system/sysinit.target.wants/systemd-firstboot.service; \
