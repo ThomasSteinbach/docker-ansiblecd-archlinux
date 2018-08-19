@@ -31,6 +31,7 @@ RUN printf '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts
 # Inspec
 RUN gem install docker-api -v  1.34.2
 RUN gem install inspec -v  2.2.61
+RUN ln -s "$(ruby -e 'print Gem.user_dir')/bin/inspec" /usr/local/bin/inspec
 
 RUN \
     rm -f /usr/lib/systemd/system/sysinit.target.wants/systemd-firstboot.service; \
