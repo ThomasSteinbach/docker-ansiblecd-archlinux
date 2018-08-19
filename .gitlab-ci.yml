@@ -29,7 +29,9 @@ build:
 debug-failed-build:
   stage: debug
   script:
-    - grep '\-\-\-> [0-9a-z]' docker-build-debug.out |tail -1| cut -b 7-
+    - DEBUG_LAYER=$(grep '\-\-\-> [0-9a-z]' docker-build-debug.out |tail -1| cut -b 7-)
+    - docker tag "$DEBUG_LAYER" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-failed"
+    - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-failed"
   when: on_failure
   dependencies:
     - build
