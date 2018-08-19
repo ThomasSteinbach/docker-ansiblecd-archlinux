@@ -3,6 +3,7 @@ image: docker:latest
 stages:
   - lint
   - build
+  - debug
   - test
   - publish
 
@@ -17,8 +18,21 @@ build:
   stage: build
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-    - docker build --pull -t "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}" .
+    - docker build --pull -t "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}" . | tee docker-build-debug.out
     - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+  artifacts:
+    paths:
+      - docker-build-debug.out
+    when: on_failure
+    expire_in: 30 mins
+
+debug-failed-build:
+  stage: debug
+  script:
+    - grep '\-\-\-> [0-9a-z]' foo |tail -1| cut -b 7-
+  when: on_failure
+  dependencies:
+    - build
 
 test-aci-base-playbook:
   stage: test
