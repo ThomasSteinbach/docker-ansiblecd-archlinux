@@ -1,5 +1,8 @@
+FROM thomass/ansibleci-base as ansibleci-base
+
 FROM base/archlinux:latest
-MAINTAINER Thomas Steinbach
+LABEL maintainer="Thomas Steinbach"
+
 # with credits upstream: https://hub.docker.com/r/geerlingguy/docker-ubuntu1604-ansible/
 # with credits upstream: https://github.com/naftulikay/docker-xenial-vm.git
 # with credits to https://developers.redhat.com/blog/2014/05/05/running-systemd-within-docker-container/
@@ -38,4 +41,9 @@ COPY bin/systemd-await-target /usr/bin/systemd-await-target
 COPY bin/wait-for-boot /usr/bin/wait-for-boot                                                                            
 
 VOLUME ["/sys/fs/cgroup"]
-ENTRYPOINT ["/lib/systemd/systemd"]
+
+COPY --from=ansibleci-base /ansibleci-base /ansibleci-base
+RUN ln -s /ansibleci-base/scripts/run-tests.sh /usr/local/bin/run-tests && \
+    ln -s /ansibleci-base/ansible-plugins/human_log.py /usr/local/lib/python3.6/dist-packages/ansible/plugins/callback/human_log.py
+
+CMD ["/ansibleci-base/scripts/start-docker.sh"]
