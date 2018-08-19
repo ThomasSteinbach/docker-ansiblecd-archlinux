@@ -29,7 +29,7 @@ build:
 debug-failed-build:
   stage: debug
   script:
-    - grep '\-\-\-> [0-9a-z]' foo |tail -1| cut -b 7-
+    - grep '\-\-\-> [0-9a-z]' docker-build-debug.out |tail -1| cut -b 7-
   when: on_failure
   dependencies:
     - build
