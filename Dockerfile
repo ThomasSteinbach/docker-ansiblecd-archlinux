@@ -64,4 +64,4 @@ ENTRYPOINT ["/lib/systemd/systemd"]
 
 RUN adduser --disabled-password --gecos '' ansible
 # https://github.com/hadolint/hadolint/wiki/DL4006
-RUN ['/bin/bash', '-c', 'set -o pipefail && echo "ansible:ansible" | chpasswd']
+RUN ["/bin/bash", "-c", "set -o pipefail && echo 'ansible:ansible' | chpasswd"]
