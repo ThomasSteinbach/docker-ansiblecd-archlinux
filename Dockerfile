@@ -63,4 +63,5 @@ RUN ln -s /ansibleci-base/scripts/run-tests.sh /usr/local/bin/run-tests && \
 ENTRYPOINT ["/lib/systemd/systemd"]
 
 RUN adduser --disabled-password --gecos '' ansible
-RUN echo "ansible:ansible" | chpasswd
+# https://github.com/docker/docker.github.io/blob/master/develop/develop-images/dockerfile_best-practices.md#using-pipes
+RUN set -o pipefail && echo "ansible:ansible" | chpasswd
