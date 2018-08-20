@@ -21,6 +21,7 @@ RUN pacman -Syu --noconfirm \
          systemd \
          sudo \
          docker \
+         openssh \
     && rm -Rf /usr/share/doc && rm -Rf /usr/share/man
 
 # Ansible
@@ -60,3 +61,6 @@ RUN ln -s /ansibleci-base/scripts/run-tests.sh /usr/local/bin/run-tests && \
 
 #CMD ["/ansibleci-base/scripts/start-docker.sh"]
 ENTRYPOINT ["/lib/systemd/systemd"]
+
+RUN adduser --disabled-password --gecos '' ansible
+RUN echo "ansible:ansible" | chpasswd
