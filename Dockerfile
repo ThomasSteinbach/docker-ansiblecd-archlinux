@@ -24,6 +24,8 @@ RUN pacman -Syu --noconfirm \
          openssh \
     && rm -Rf /usr/share/doc && rm -Rf /usr/share/man
 
+RUN systemctl enable sshd
+
 # Ansible
 RUN pip3 install ansible==2.6.2
 RUN mkdir -p /etc/ansible
@@ -62,7 +64,7 @@ RUN ln -s /ansibleci-base/scripts/run-tests.sh /usr/local/bin/run-tests && \
 #CMD ["/ansibleci-base/scripts/start-docker.sh"]
 ENTRYPOINT ["/lib/systemd/systemd"]
 
-RUN useradd ansible
+RUN useradd --create-home ansible
 # https://github.com/hadolint/hadolint/wiki/DL4006
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "ansible:ansible" | chpasswd
