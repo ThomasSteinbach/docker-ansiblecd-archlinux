@@ -62,7 +62,7 @@ RUN ln -s /ansibleci-base/scripts/run-tests.sh /usr/local/bin/run-tests && \
 #CMD ["/ansibleci-base/scripts/start-docker.sh"]
 ENTRYPOINT ["/lib/systemd/systemd"]
 
-RUN adduser --disabled-password --gecos '' ansible
+RUN useradd ansible
 # https://github.com/hadolint/hadolint/wiki/DL4006
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "ansible:ansible" | chpasswd
