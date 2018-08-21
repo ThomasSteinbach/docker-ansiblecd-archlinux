@@ -40,14 +40,14 @@ debug-failed-build:
   dependencies:
     - build
 
-test-aci-base-playbook:
+.test-aci-base-playbook:
   stage: test
   image: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
   variables:
     PLAYBOOKDIR: '/ansibleci-base/examples/default'
   script: run-tests
 
-test-custom-playbook:
+.test-custom-playbook:
   stage: test
   image: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
   variables:
