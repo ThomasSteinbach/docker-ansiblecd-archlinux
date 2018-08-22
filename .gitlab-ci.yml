@@ -42,7 +42,7 @@ debug-failed-build:
 
 test-ssh-port:
   stage: test
-  busybox: busybox:latest
+  image: busybox:latest
   services:
     - name: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
       alias: target
