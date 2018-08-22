@@ -12,7 +12,9 @@ stages:
 
 hadolint:
   stage: lint
-  image: hadolint/hadolint
+  image:
+    name: hadolint/hadolint
+    entrypoint: ["/bin/bash"]
   script: hadolint
             --ignore DL3007
             --ignore DL3008
