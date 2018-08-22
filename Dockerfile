@@ -53,8 +53,8 @@ RUN ln -s /ansibleci-base/scripts/run-tests.sh /usr/local/bin/run-tests && \
     ln -s /ansibleci-base/ansible-plugins/human_log.py /usr/lib/python3.7/site-packages/ansible/plugins/callback/human_log.py
 
 EXPOSE 22/tcp
-HEALTHCHECK --interval=5m --timeout=10s \
-  CMD echo "exit" | telnet localhost 22
+HEALTHCHECK --interval=5s --timeout=3s \
+  CMD < /dev/tcp/127.0.0.1/22
 
 #CMD ["/ansibleci-base/scripts/start-docker.sh"]
 ENTRYPOINT ["/lib/systemd/systemd"]
