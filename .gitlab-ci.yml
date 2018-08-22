@@ -12,9 +12,7 @@ stages:
 
 hadolint:
   stage: lint
-  image:
-    name: hadolint/hadolint
-    entrypoint: ["/bin/sh"]
+  image: hadolint/hadolint:latest-debian
   script: hadolint
             --ignore DL3007
             --ignore DL3008
