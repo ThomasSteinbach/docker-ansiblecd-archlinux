@@ -36,16 +36,7 @@ RUN gem install docker-api -v  1.34.2
 RUN gem install inspec -v  2.2.61
 RUN ln -s "$(ruby -e 'print Gem.user_dir')/bin/inspec" /usr/local/bin/inspec
 
-RUN \
-    rm -f /usr/lib/systemd/system/sysinit.target.wants/systemd-firstboot.service; \
-    rm -f /etc/systemd/system/*.wants/*; \
-    rm -f /lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup.service; \
-    rm -f /lib/systemd/system/multi-user.target.wants/*; \
-    rm -f /lib/systemd/system/local-fs.target.wants/*; \
-    rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
-    rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
-    rm -f /lib/systemd/system/basic.target.wants/*; \
-    rm -f /lib/systemd/system/anaconda.target.wants/*;
+RUN rm -f /usr/lib/systemd/system/sysinit.target.wants/systemd-firstboot.service
 
 COPY files/initctl_faker.sh .
 RUN rm -fr /sbin/initctl && \
