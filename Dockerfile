@@ -63,7 +63,7 @@ RUN ln -s /ansibleci-base/scripts/run-tests.sh /usr/local/bin/run-tests && \
 
 EXPOSE 22/tcp
 HEALTHCHECK --interval=5m --timeout=3s \
-  < /dev/tcp/127.0.0.1/22
+  echo "check" > /dev/tcp/127.0.0.1/22
 
 #CMD ["/ansibleci-base/scripts/start-docker.sh"]
 ENTRYPOINT ["/lib/systemd/systemd"]
