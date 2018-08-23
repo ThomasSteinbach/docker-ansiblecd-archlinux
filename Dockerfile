@@ -9,20 +9,20 @@ LABEL maintainer="Thomas Steinbach"
 
 ENV container=docker
 
-RUN pacman -Syu --noconfirm \
-    && pacman -S --noconfirm \
-         python \
-         python-pip \
-         rubygems \
-         ruby-rdoc \
-         base-devel \
-         dbus \
-         syslog-ng \
-         systemd \
-         sudo \
-         docker \
-         openssh \
-    && rm -Rf /usr/share/doc && rm -Rf /usr/share/man
+RUN pacman -Sy --noconfirm && \
+    pacman -S --noconfirm \
+      python \
+      python-pip \
+      rubygems \
+      ruby-rdoc \
+      base-devel \
+      dbus \
+      syslog-ng \
+      systemd \
+      sudo \
+      docker \
+      openssh
+    #&& rm -Rf /usr/share/doc && rm -Rf /usr/share/man
 
 RUN systemctl enable sshd
 
@@ -32,7 +32,6 @@ RUN mkdir -p /etc/ansible
 RUN printf '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts
 
 # Inspec
-RUN gem install docker-api -v  1.34.2
 RUN gem install inspec -v  2.2.61
 RUN ln -s "$(ruby -e 'print Gem.user_dir')/bin/inspec" /usr/local/bin/inspec
 
