@@ -102,7 +102,7 @@ test:custom-playbook:
     - docker cp "$CI_PROJECT_DIR" "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}:/playbook"
     - docker start -a "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
 
-.test-cleanup:
+test-cleanup:
   stage: test-cleanup
   script:
     - docker rm -vf "target-01-$CI_PIPELINE_ID"
