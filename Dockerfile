@@ -48,10 +48,6 @@ COPY files/wait-for-boot /usr/bin/wait-for-boot
 VOLUME ["/sys/fs/cgroup"]
 
 COPY --from=ansibleci-base /ansibleci-base /ansibleci-base
-RUN ln -s /ansibleci-base/scripts/run-tests.sh /usr/local/bin/run-tests
-
-# && \
-#  ln -s /ansibleci-base/ansible-plugins/human_log.py /usr/lib/python3.7/site-packages/ansible/plugins/callback/human_log.py
 
 EXPOSE 22/tcp
 HEALTHCHECK --interval=5s --timeout=3s \
