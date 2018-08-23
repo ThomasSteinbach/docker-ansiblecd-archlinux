@@ -56,9 +56,10 @@ test:ssh-port:
         -v /sys/fs/cgroup:/sys/fs/cgroup:ro
         "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
     - docker run --rm
-        --network "gitlab-ci-$CI_PIPELINE_ID"
+        --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
         busybox:latest
         /bin/sh -c "echo exit | telnet target-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID} 22"
+
 test:base-playbook:
   stage: test
   variables:
@@ -105,7 +106,7 @@ test-cleanup:
     - docker rm -vf "target-01-$CI_PIPELINE_ID"
     - docker rm -vf "target-02-$CI_PIPELINE_ID"
     - docker rm -vf "target-03-$CI_PIPELINE_ID"
-    - docker rm -vf "ansibleci-01-$CI_PIPELINE_ID"
+    - docker rm -vf "ansibleci-03-$CI_PIPELINE_ID"
     - docker network remove "gitlab-ci-01-$CI_PIPELINE_ID"
     - docker network remove "gitlab-ci-02-$CI_PIPELINE_ID"
     - docker network remove "gitlab-ci-03-$CI_PIPELINE_ID"
