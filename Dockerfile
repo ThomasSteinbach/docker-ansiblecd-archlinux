@@ -59,7 +59,8 @@ HEALTHCHECK --interval=5s --timeout=3s \
 #CMD ["/ansibleci-base/scripts/start-docker.sh"]
 ENTRYPOINT ["/lib/systemd/systemd"]
 
-RUN useradd --create-home ansible
+RUN useradd --home-dir /ansible --create-home ansible
+WORKDIR /ansible
 # https://github.com/hadolint/hadolint/wiki/DL4006
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "ansible:ansible" | chpasswd
