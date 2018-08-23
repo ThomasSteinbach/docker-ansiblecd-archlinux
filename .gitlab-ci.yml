@@ -7,9 +7,8 @@ stages:
   - lint
   - build
   - debug
-  - pre-test
   - test
-  - post-test
+  - test-cleanup
   - publish
 
 hadolint:
@@ -43,35 +42,73 @@ debug-failed-build:
   dependencies:
     - build
 
-start-target:
-  stage: pre-test
-  script:
-    - docker network create "gitlab-ci-$CI_PIPELINE_ID"
-    - docker run -d --name "target-$CI_PIPELINE_ID" --privileged --network "gitlab-ci-$CI_PIPELINE_ID" -v /sys/fs/cgroup:/sys/fs/cgroup:ro "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
-
-test-ssh-port:
+test:
   stage: test
-  script: docker run --rm --network "gitlab-ci-$CI_PIPELINE_ID" busybox:latest /bin/sh -c "echo exit | telnet target-$CI_PIPELINE_ID 22"
-
-.test-aci-base-playbook:
-  stage: test
-  image: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
   variables:
-    PLAYBOOKDIR: '/ansibleci-base/examples/default'
-  script: run-tests
-
-.test-custom-playbook:
-  stage: test
-  image: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
-  variables:
-    PLAYBOOKDIR: "test"
-  script: run-tests
-
-stop-target:
-  stage: post-test
+    TEST_ARTIFACTS_ID: '01'
   script:
-    - docker rm -vf "target-$CI_PIPELINE_ID"
-    - docker network remove "gitlab-ci-$CI_PIPELINE_ID"
+    - docker network create "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
+    - docker run -d
+        --name "target-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
+        --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
+        --network-alias aci-target
+        --privileged
+        -v /sys/fs/cgroup:/sys/fs/cgroup:ro
+        "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+    - docker run --rm
+        --network "gitlab-ci-$CI_PIPELINE_ID"
+        busybox:latest
+        /bin/sh -c "echo exit | telnet target-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID} 22"
+test:
+  stage: test
+  variables:
+    TEST_ARTIFACTS_ID: '02'
+  script:
+    - docker network create "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
+    - docker run -d
+        --name "target-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
+        --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
+        --network-alias aci-target
+        --privileged
+        -v /sys/fs/cgroup:/sys/fs/cgroup:ro
+        "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+    - docker run --rm
+        --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
+        -e PLAYBOOKDIR=/ansibleci-base/examples/default
+        thomass/ansibleci-base
+        run-tests
+
+test:
+  stage: test
+  variables:
+    TEST_ARTIFACTS_ID: '03'
+  script:
+    - docker network create "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
+    - docker run -d
+        --name "target-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
+        --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
+        --network-alias aci-target
+        --privileged
+        -v /sys/fs/cgroup:/sys/fs/cgroup:ro
+        "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+    - docker container create
+        --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
+        --name "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
+        thomass/ansibleci-base
+        run-tests
+    - docker cp "$CI_PROJECT_DIR/test" "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}:/ansible"
+    - docker start -a "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
+
+test-cleanup:
+  stage: test-cleanup
+  script:
+    - docker rm -vf "target-01-$CI_PIPELINE_ID"
+    - docker rm -vf "target-02-$CI_PIPELINE_ID"
+    - docker rm -vf "target-03-$CI_PIPELINE_ID"
+    - docker rm -vf "ansibleci-01-$CI_PIPELINE_ID"
+    - docker network remove "gitlab-ci-01-$CI_PIPELINE_ID"
+    - docker network remove "gitlab-ci-02-$CI_PIPELINE_ID"
+    - docker network remove "gitlab-ci-03-$CI_PIPELINE_ID"
   when: always
 
 dockerhub:
