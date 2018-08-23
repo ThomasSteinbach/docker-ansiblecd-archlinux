@@ -46,12 +46,12 @@ debug-failed-build:
 start-target:
   stage: pre-test
   script:
-    - docker network create test
-    - docker run -d --name target --privileged --network test -v /sys/fs/cgroup:/sys/fs/cgroup:ro "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+    - docker network create "gitlab-ci-$CI_JOB_ID"
+    - docker run -d --name "target-$CI_JOB_ID" --privileged --network "gitlab-ci-$CI_JOB_ID" -v /sys/fs/cgroup:/sys/fs/cgroup:ro "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
 
 test-ssh-port:
   stage: test
-  script: docker run --rm --network test busybox:latest /bin/sh -c 'echo exit | telnet target 22'
+  script: docker run --rm --network "gitlab-ci-$CI_JOB_ID" busybox:latest /bin/sh -c "echo exit | telnet target-$CI_JOB_ID 22"
 
 .test-aci-base-playbook:
   stage: test
@@ -70,8 +70,8 @@ test-ssh-port:
 stop-target:
   stage: post-test
   script:
-    - docker rm -vf target
-    - docker network remove test
+    - docker rm -vf "target-$CI_JOB_ID"
+    - docker network remove "gitlab-ci-$CI_JOB_ID"
   when: always
 
 dockerhub:
