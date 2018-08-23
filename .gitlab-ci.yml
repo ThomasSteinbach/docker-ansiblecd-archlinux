@@ -70,8 +70,8 @@ test-ssh-port:
 stop-target:
   stage: post-test
   script:
-    - docker network remove test
     - docker rm -vf target
+    - docker network remove test
   when: always
 
 dockerhub:
