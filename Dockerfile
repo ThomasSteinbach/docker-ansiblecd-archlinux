@@ -61,3 +61,4 @@ WORKDIR /ansible
 # https://github.com/hadolint/hadolint/wiki/DL4006
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "ansible:ansible" | chpasswd
+RUN echo 'ansible ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers

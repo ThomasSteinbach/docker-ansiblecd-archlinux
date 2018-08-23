@@ -1,15 +1,16 @@
 - name: simple test playbook
   hosts: localhost
+  become: true
   tasks:
 
-    - name: install sshd
+    - name: install docker
       pacman:
-        name: openssh
+        name: docker
         state: present
         update_cache: yes
 
-    - name: start sshd
+    - name: start docker
       service:
-        name: sshd
+        name: docker
         state: started
         use: service
