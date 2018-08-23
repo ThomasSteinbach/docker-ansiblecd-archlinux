@@ -7,7 +7,9 @@ stages:
   - lint
   - build
   - debug
+  - pre-test
   - test
+  - post-test
   - publish
 
 hadolint:
@@ -41,12 +43,13 @@ debug-failed-build:
   dependencies:
     - build
 
+start-target:
+  stage: pre-test
+  script: docker run -d --name target --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+
 test-ssh-port:
   stage: test
   image: busybox:latest
-  services:
-    - name: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
-      alias: target
   script: echo exit | telnet target 22
 
 .test-aci-base-playbook:
@@ -62,6 +65,11 @@ test-ssh-port:
   variables:
     PLAYBOOKDIR: "test"
   script: run-tests
+
+stop-target:
+  stage: post-test
+  script: docker rm -vf target
+  when: always
 
 dockerhub:
   stage: publish
