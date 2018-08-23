@@ -42,7 +42,7 @@ debug-failed-build:
   dependencies:
     - build
 
-test:ssh-port:
+.test:ssh-port:
   stage: test
   variables:
     TEST_ARTIFACTS_ID: '01'
@@ -79,7 +79,7 @@ test:base-playbook:
         thomass/ansibleci-base
         run-tests
 
-test:custom-playbook:
+.test:custom-playbook:
   stage: test
   variables:
     TEST_ARTIFACTS_ID: '03'
@@ -100,7 +100,14 @@ test:custom-playbook:
     - docker cp "$CI_PROJECT_DIR/test" "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}:/ansible"
     - docker start -a "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
 
-test-cleanup:
+test-cleanup2:
+  stage: test-cleanup
+  script:
+    - docker rm -vf "target-02-$CI_PIPELINE_ID"
+    - docker network remove "gitlab-ci-02-$CI_PIPELINE_ID"
+  when: always
+
+.test-cleanup:
   stage: test-cleanup
   script:
     - docker rm -vf "target-01-$CI_PIPELINE_ID"
