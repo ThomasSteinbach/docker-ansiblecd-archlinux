@@ -42,7 +42,7 @@ debug-failed-build:
   dependencies:
     - build
 
-test:
+test:ssh-port:
   stage: test
   variables:
     TEST_ARTIFACTS_ID: '01'
@@ -59,7 +59,7 @@ test:
         --network "gitlab-ci-$CI_PIPELINE_ID"
         busybox:latest
         /bin/sh -c "echo exit | telnet target-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID} 22"
-test:
+test:base-playbook:
   stage: test
   variables:
     TEST_ARTIFACTS_ID: '02'
@@ -78,7 +78,7 @@ test:
         thomass/ansibleci-base
         run-tests
 
-test:
+test:custom-playbook:
   stage: test
   variables:
     TEST_ARTIFACTS_ID: '03'
