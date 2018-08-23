@@ -98,7 +98,7 @@ test:custom-playbook:
         --name "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
         thomass/ansibleci-base
         run-tests
-    - docker cp "$CI_PROJECT_DIR/test" "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}:/ansible"
+    - docker cp "$CI_PROJECT_DIR/test/" "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}:/ansible"
     - docker start -a "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
 
 .test-cleanup:
