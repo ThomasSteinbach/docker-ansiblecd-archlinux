@@ -42,7 +42,7 @@ debug-failed-build:
   dependencies:
     - build
 
-.test:ssh-port:
+test:ssh-port:
   stage: test
   variables:
     TEST_ARTIFACTS_ID: '01'
@@ -103,7 +103,9 @@ test:base-playbook:
 test-cleanup2:
   stage: test-cleanup
   script:
+    - docker rm -vf "target-01-$CI_PIPELINE_ID"
     - docker rm -vf "target-02-$CI_PIPELINE_ID"
+    - docker network remove "gitlab-ci-01-$CI_PIPELINE_ID"
     - docker network remove "gitlab-ci-02-$CI_PIPELINE_ID"
   when: always
 
