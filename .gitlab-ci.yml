@@ -97,7 +97,6 @@ test:custom-playbook:
         --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
         --name "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
         -e PLAYBOOKDIR=/playbook/test
-        -e ANSIBLE_VERBOSE=true
         thomass/ansibleci-base
         run-tests
     - docker cp "$CI_PROJECT_DIR" "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}:/playbook"
@@ -108,7 +107,7 @@ test-cleanup:
   script:
     - docker rm -vf "target-01-$CI_PIPELINE_ID"
     - docker rm -vf "target-02-$CI_PIPELINE_ID"
-    - docker rm -vf "target-03-$CI_PIPELINE_ID"
+#    - docker rm -vf "target-03-$CI_PIPELINE_ID"
     - docker rm -vf "ansibleci-03-$CI_PIPELINE_ID"
     - docker network remove "gitlab-ci-01-$CI_PIPELINE_ID"
     - docker network remove "gitlab-ci-02-$CI_PIPELINE_ID"
