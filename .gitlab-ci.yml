@@ -53,6 +53,7 @@ test:ssh-port:
         --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
         --network-alias aci-target
         --privileged
+        --tmpfs /run
         -v /sys/fs/cgroup:/sys/fs/cgroup:ro
         "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
     - sleep 10
@@ -72,6 +73,7 @@ test:base-playbook:
         --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
         --network-alias aci-target
         --privileged
+        --tmpfs /run
         -v /sys/fs/cgroup:/sys/fs/cgroup:ro
         "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
     - docker run --rm
@@ -91,6 +93,7 @@ test:custom-playbook:
         --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
         --network-alias aci-target
         --privileged
+        --tmpfs /run
         -v /sys/fs/cgroup:/sys/fs/cgroup:ro
         "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
     - docker container create
@@ -107,7 +110,7 @@ test-cleanup:
   script:
     - docker rm -vf "target-01-$CI_PIPELINE_ID"
     - docker rm -vf "target-02-$CI_PIPELINE_ID"
-#    - docker rm -vf "target-03-$CI_PIPELINE_ID"
+    - docker rm -vf "target-03-$CI_PIPELINE_ID"
     - docker rm -vf "ansibleci-03-$CI_PIPELINE_ID"
     - docker network remove "gitlab-ci-01-$CI_PIPELINE_ID"
     - docker network remove "gitlab-ci-02-$CI_PIPELINE_ID"
