@@ -111,7 +111,7 @@ test-cleanup:
   script:
     - docker rm -vf "target-01-$CI_PIPELINE_ID"
     - docker rm -vf "target-02-$CI_PIPELINE_ID"
-#    - docker rm -vf "target-03-$CI_PIPELINE_ID"
+    - docker rm -vf "target-03-$CI_PIPELINE_ID"
     - docker rm -vf "ansibleci-03-$CI_PIPELINE_ID"
     - docker network remove "gitlab-ci-01-$CI_PIPELINE_ID"
     - docker network remove "gitlab-ci-02-$CI_PIPELINE_ID"
