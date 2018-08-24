@@ -93,6 +93,7 @@ test:custom-playbook:
         --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
         --network-alias aci-target
         --privileged
+         --security-opt seccomp=unconfined
         --tmpfs /run
         -v /sys/fs/cgroup:/sys/fs/cgroup:ro
         "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
@@ -110,7 +111,7 @@ test-cleanup:
   script:
     - docker rm -vf "target-01-$CI_PIPELINE_ID"
     - docker rm -vf "target-02-$CI_PIPELINE_ID"
-    - docker rm -vf "target-03-$CI_PIPELINE_ID"
+#    - docker rm -vf "target-03-$CI_PIPELINE_ID"
     - docker rm -vf "ansibleci-03-$CI_PIPELINE_ID"
     - docker network remove "gitlab-ci-01-$CI_PIPELINE_ID"
     - docker network remove "gitlab-ci-02-$CI_PIPELINE_ID"
