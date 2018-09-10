@@ -5,8 +5,10 @@ RUN pacman -Sy --noconfirm && \
     pacman -S --noconfirm \
       python \
       sudo \
-      openssh
-    #&& rm -Rf /usr/share/doc && rm -Rf /usr/share/man
+      openssh && \
+    rm -Rf /usr/share/doc && rm -Rf /usr/share/man
+
+RUN /usr/bin/ssh-keygen -A
 
 RUN useradd --home-dir /gitlab --create-home gitlab
 WORKDIR /gitlab
