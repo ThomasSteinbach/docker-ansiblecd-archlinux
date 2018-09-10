@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-set -e && /usr/bin/systemd-await-target multi-user.target

@@ -8,7 +8,6 @@ stages:
   - build
   - debug
   - test
-  - test-cleanup
   - publish
 
 hadolint:
@@ -44,79 +43,25 @@ debug-failed-build:
 
 test:ssh-port:
   stage: test
-  variables:
-    TEST_ARTIFACTS_ID: '01'
+  services:
+    - name: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+      alias: aci-target
   script:
-    - docker network create "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
-    - docker run -d
-        --name "target-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
-        --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
-        --network-alias aci-target
-        --privileged
-        --tmpfs /run
-        -v /sys/fs/cgroup:/sys/fs/cgroup:ro
-        "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
     - sleep 10
     - docker run --rm
-        --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
         busybox:latest
         /bin/sh -c "echo exit | telnet aci-target 22"
 
 test:base-playbook:
   stage: test
-  variables:
-    TEST_ARTIFACTS_ID: '02'
+  services:
+    - name: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+      alias: aci-target
   script:
-    - docker network create "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
-    - docker run -d
-        --name "target-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
-        --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
-        --network-alias aci-target
-        --privileged
-        --tmpfs /run
-        -v /sys/fs/cgroup:/sys/fs/cgroup:ro
-        "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
     - docker run --rm
-        --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
         -e PLAYBOOKDIR=/ansibleci-base/examples/default
         thomass/ansibleci-base
         run-tests
-
-test:custom-playbook:
-  stage: test
-  variables:
-    TEST_ARTIFACTS_ID: '03'
-  script:
-    - docker network create "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
-    - docker run -d
-        --name "target-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
-        --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
-        --network-alias aci-target
-        --privileged
-         --security-opt seccomp=unconfined
-        --tmpfs /run
-        -v /sys/fs/cgroup:/sys/fs/cgroup:ro
-        "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
-    - docker container create
-        --network "gitlab-ci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
-        --name "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
-        -e PLAYBOOKDIR=/playbook/test
-        thomass/ansibleci-base
-        run-tests
-    - docker cp "$CI_PROJECT_DIR" "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}:/playbook"
-    - docker start -a "ansibleci-${TEST_ARTIFACTS_ID}-${CI_PIPELINE_ID}"
-
-test-cleanup:
-  stage: test-cleanup
-  script:
-    - docker rm -vf "target-01-$CI_PIPELINE_ID"
-    - docker rm -vf "target-02-$CI_PIPELINE_ID"
-    - docker rm -vf "target-03-$CI_PIPELINE_ID"
-    - docker rm -vf "ansibleci-03-$CI_PIPELINE_ID"
-    - docker network remove "gitlab-ci-01-$CI_PIPELINE_ID"
-    - docker network remove "gitlab-ci-02-$CI_PIPELINE_ID"
-    - docker network remove "gitlab-ci-03-$CI_PIPELINE_ID"
-  when: always
 
 dockerhub:
   stage: publish
