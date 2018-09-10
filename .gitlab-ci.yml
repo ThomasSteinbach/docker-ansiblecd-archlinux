@@ -56,7 +56,7 @@ test:playbook:
     - name: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
       alias: aci-target
   variables:
-    PLAYBOOKDIR: "${CI_PROJECT_DIR}/example-playbook"
+    PLAYBOOKDIR: "${CI_PROJECT_DIR}/test-playbook"
   script: run-tests
 
 dockerhub:
