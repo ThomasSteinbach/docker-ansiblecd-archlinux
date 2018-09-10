@@ -43,25 +43,20 @@ debug-failed-build:
 
 test:ssh-port:
   stage: test
+  image: busybox:latest
   services:
     - name: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
       alias: aci-target
-  script:
-    - sleep 10
-    - docker run --rm
-        busybox:latest
-        /bin/sh -c "echo exit | telnet aci-target 22"
+  script: echo exit | telnet aci-target 22
 
 test:base-playbook:
   stage: test
+  image: thomass/ansibleci-base
   services:
     - name: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
       alias: aci-target
-  script:
-    - docker run --rm
-        -e PLAYBOOKDIR=/ansibleci-base/examples/default
-        thomass/ansibleci-base
-        run-tests
+  variables: PLAYBOOKDIR=/ansibleci-base/examples/default
+  script: run-tests
 
 dockerhub:
   stage: publish
