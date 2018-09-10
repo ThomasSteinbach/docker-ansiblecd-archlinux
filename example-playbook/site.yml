@@ -1,0 +1,7 @@
+- name: simple test playbook
+  hosts: aci-target
+  tasks:
+    - name: create test directory
+      file:
+        path: /tmp/testdir
+        state: directory
