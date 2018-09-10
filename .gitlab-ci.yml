@@ -55,7 +55,8 @@ test:base-playbook:
   services:
     - name: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
       alias: aci-target
-  variables: PLAYBOOKDIR=/ansibleci-base/examples/default
+  variables:
+    PLAYBOOKDIR: /ansibleci-base/examples/default
   script: run-tests
 
 dockerhub:
