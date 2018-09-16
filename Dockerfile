@@ -8,7 +8,9 @@ RUN pacman -Sy --noconfirm && \
       openssh && \
     rm -Rf /usr/share/doc && rm -Rf /usr/share/man
 
-RUN /usr/bin/ssh-keygen -A
+
+RUN /usr/bin/ssh-keygen -A && \
+    sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/g' /etc/sudoers
 
 RUN useradd --home-dir /gitlab --create-home --groups wheel gitlab
 WORKDIR /gitlab
