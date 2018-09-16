@@ -5,3 +5,8 @@
       file:
         path: /tmp/testdir
         state: directory
+    - name: create directory with become
+      become: true
+      file:
+        path: /root/testdir
+        state: directory

@@ -10,7 +10,7 @@ RUN pacman -Sy --noconfirm && \
 
 RUN /usr/bin/ssh-keygen -A
 
-RUN useradd --home-dir /gitlab --create-home gitlab
+RUN useradd --home-dir /gitlab --create-home --groups wheel gitlab
 WORKDIR /gitlab
 # https://github.com/hadolint/hadolint/wiki/DL4006
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
