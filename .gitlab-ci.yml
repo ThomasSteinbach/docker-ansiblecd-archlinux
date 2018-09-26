@@ -41,6 +41,14 @@ debug-failed-build:
   dependencies:
     - build
 
+clair:
+  stage: test
+  image: thomass/clair
+  services:
+    - name: arminc/clair-db:latest
+      alias: postgres
+  script: scan "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+
 test:ssh-port:
   stage: test
   image: busybox:latest
